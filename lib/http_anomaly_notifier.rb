@@ -2,7 +2,6 @@ require 'http_anomaly_notifier/version'
 require 'http_anomaly_notifier/cli'
 require 'net/http'
 require 'yaml'
-require 'pry'
 
 module HttpAnomalyNotifier
   class Cron
@@ -28,11 +27,7 @@ module HttpAnomalyNotifier
         new_crontab << END_PHRASE
         `crontab -r`
         `crontab -l | { cat; echo "#{new_crontab.join("\n")}"; } | crontab -`
-
-        results = config.map do |c|
-          register c
-          "#{c['url']}"
-        end
+        results = config.map { |name, c| "  #{name}" }
         puts "monitorings ...\n#{results.join("\n")}"
       end
     end
@@ -40,8 +35,8 @@ module HttpAnomalyNotifier
 
   class HTTP
     def initialize(file:, name:)
-      config = YAML.load_file(file)["#{name}"]
-      @url = config['url']
+      config = YAML.load_file(file)[name]
+      @url = URI.parse config['url']
       @basic_auth_user = config['basic_auth'].first unless config['basic_auth'].nil?
       @basic_auth_password = config['basic_auth'].last unless config['basic_auth'].nil?
     end

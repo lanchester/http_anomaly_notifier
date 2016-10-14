@@ -2,7 +2,6 @@
 
 require 'thor'
 require './lib/http_anomaly_notifier'
-require 'pry'
 
 module HttpAnomalyNotifier
   class CLI < Thor
@@ -19,7 +18,7 @@ module HttpAnomalyNotifier
       if options[:test]
         return HttpAnomalyNotifier::Notification.new(file: options[:file], name: options[:name]).post_message
       end
-      unless HttpAnomalyNotifier::HTTP.request file: options[:file], name: options[:name]
+      unless HttpAnomalyNotifier::HTTP.new(file: options[:file], name: options[:name]).request
         HttpAnomalyNotifier::Notification.new(file: options[:file], name: options[:name]).post_message
       end
     end
