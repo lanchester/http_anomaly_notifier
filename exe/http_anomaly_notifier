@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require "http_anomaly_notifier"
+HttpAnomalyNotifier::CLI.start
